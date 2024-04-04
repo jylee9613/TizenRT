@@ -635,16 +635,20 @@ static void utc_auth_verify_rsa_signature_sign_n(void)
  * @precondition     none
  * @postcondition    none
  */
+
+/* private key와 public key를 아래와 같이 세팅한 후, 해당 키값으로 sign & verify 수행하기 (slot 32번) */
 static void utc_auth_get_ecdsa_signature_p(void)
 {
-	US_DEFINE_DATA(hash, "hashed data");
+	US_DEFINE_DATA(plain, "hashed data");
+	security_data hash = {NULL, 0};
 	security_data sign = {NULL, 0};
 	int i = 0, j = 0;
 
-	for (; i < sizeof(g_ecdsa_mode_table)/sizeof(security_ecdsa_mode); i++) {
-		for (; j < sizeof(g_hash_mode_table)/sizeof(security_hash_mode); j++) {
+	for (; i < sizeof(g_ecdsa_mode_table) / sizeof(security_ecdsa_mode); i++) {
+		for (; j < sizeof(g_hash_mode_table) / sizeof(security_hash_mode); j++) {
+			security_error hash_res = auth_get_hash(g_hnd, g_hash_mode_table[j], &plain, &hash);
 			security_ecdsa_param param = {g_ecdsa_mode_table[i], g_hash_mode_table[j]};
-			security_error res = auth_get_ecdsa_signature(g_hnd, &param, UTC_CRYPTO_KEY_NAME, &hash, &sign);
+			security_error res = auth_get_ecdsa_signature(g_hnd, &param, UTC_AUTH_KEY_NAME, &hash, &sign);
 
 			TC_ASSERT_EQ("auth_get_ecdsa_signature_p", res, SECURITY_OK);
 			TC_SUCCESS_RESULT();

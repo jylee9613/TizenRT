@@ -25,6 +25,7 @@
 #include "utc_security.h"
 
 #define ITER_COUNT		10
+#define RSA_DATA_LEN	128 // 1024 bits
 
 static security_rsa_mode g_rsa_mode_table[] = {
 	RSASSA_PKCS1_V1_5,
@@ -447,24 +448,20 @@ static void utc_crypto_aes_decryption_output_n(void)
  */
 static void utc_crypto_rsa_encryption_p(void)
 {
-	unsigned char plain_text[] = "plain text";
-	unsigned int plain_text_len = strlen((const char*)plain_text) + 1;
+	unsigned char plain_text[RSA_DATA_LEN] = {1, };
+	unsigned int plain_text_len = RSA_DATA_LEN;
 
 	security_data plain = {plain_text, plain_text_len};
 	security_data enc = {NULL, 0};
 
-	int i = 0, j = 0, k = 0;
-	for (; i < sizeof(g_rsa_mode_table)/sizeof(security_rsa_mode); i++) {
-		for (; j < sizeof(g_hash_mode_table)/sizeof(security_hash_mode); j++) {
-			for (; k < sizeof(g_hash_mode_table)/sizeof(security_hash_mode); k++) {
-				security_rsa_param param = {g_rsa_mode_table[i], g_hash_mode_table[j],
-										   g_hash_mode_table[k], 0};
-				security_error res = crypto_rsa_encryption(g_hnd, &param, UTC_CRYPTO_KEY_NAME,
-														   &plain, &enc);
+	for (int rsa_mode; rsa_mode < sizeof(g_rsa_mode_table) / sizeof(security_rsa_mode); rsa_mode++) {
+		for (int hash_mode; hash_mode < sizeof(g_hash_mode_table) / sizeof(security_hash_mode); hash_mode++) {
+			security_rsa_param param = {g_rsa_mode_table[rsa_mode], g_hash_mode_table[hash_mode], g_hash_mode_table[hash_mode], 0};
+			security_error res = crypto_rsa_encryption(g_hnd, &param, UTC_CERT_NAME,
+													   &plain, &enc);
 
-				TC_ASSERT_EQ("crypto_rsa_encryption_p", res, SECURITY_OK);
-				TC_SUCCESS_RESULT();
-			}
+			TC_ASSERT_EQ("crypto_rsa_encryption_p", res, SECURITY_OK);
+			TC_SUCCESS_RESULT();
 		}
 	}
 }
@@ -486,7 +483,7 @@ static void utc_crypto_rsa_encryption_hnd_n(void)
 	security_data enc = {NULL, 0};
 	security_rsa_param param = {RSASSA_PKCS1_V1_5, HASH_MD5, HASH_MD5, 0};
 
-	security_error res = crypto_rsa_encryption(NULL, &param, UTC_CRYPTO_KEY_NAME, &plain, &enc);
+	security_error res = crypto_rsa_encryption(NULL, &param, UTC_CERT_NAME, &plain, &enc);
 
 	TC_ASSERT_EQ("crypto_rsa_encryption_hnd_n", res, SECURITY_INVALID_INPUT_PARAMS);
 	TC_SUCCESS_RESULT();
@@ -508,7 +505,7 @@ static void utc_crypto_rsa_encryption_param_n(void)
 	security_data plain = {plain_text, plain_text_len};
 	security_data enc = {NULL, 0};
 	security_rsa_param param = {RSASSA_UNKNOWN, HASH_MD5, HASH_MD5, 0};
-	security_error res = crypto_rsa_encryption(g_hnd, &param, UTC_CRYPTO_KEY_NAME, &plain, &enc);
+	security_error res = crypto_rsa_encryption(g_hnd, &param, UTC_CERT_NAME, &plain, &enc);
 
 	TC_ASSERT_EQ("crypto_rsa_encryption_param", res, SECURITY_INVALID_INPUT_PARAMS);
 	TC_SUCCESS_RESULT();
@@ -530,7 +527,7 @@ static void utc_crypto_rsa_encryption_param2_n(void)
 	security_data plain = {plain_text, plain_text_len};
 	security_data enc = {NULL, 0};
 	security_rsa_param param = {RSASSA_PKCS1_V1_5, HASH_UNKNOWN, HASH_MD5, 0};
-	security_error res = crypto_rsa_encryption(g_hnd, &param, UTC_CRYPTO_KEY_NAME, &plain, &enc);
+	security_error res = crypto_rsa_encryption(g_hnd, &param, UTC_CERT_NAME, &plain, &enc);
 
 	TC_ASSERT_EQ("crypto_rsa_encryption_param2", res, SECURITY_INVALID_INPUT_PARAMS);
 	TC_SUCCESS_RESULT();
@@ -552,7 +549,7 @@ static void utc_crypto_rsa_encryption_param3_n(void)
 	security_data plain = {plain_text, plain_text_len};
 	security_data enc = {NULL, 0};
 	security_rsa_param param = {RSASSA_PKCS1_V1_5, HASH_MD5, HASH_UNKNOWN, 0};
-	security_error res = crypto_rsa_encryption(g_hnd, &param, UTC_CRYPTO_KEY_NAME, &plain, &enc);
+	security_error res = crypto_rsa_encryption(g_hnd, &param, UTC_CERT_NAME, &plain, &enc);
 
 	TC_ASSERT_EQ("crypto_rsa_encryption_param3", res, SECURITY_INVALID_INPUT_PARAMS);
 	TC_SUCCESS_RESULT();
@@ -591,7 +588,7 @@ static void utc_crypto_rsa_encryption_output_n(void)
 
 	security_data plain = {plain_text, plain_text_len};
 	security_rsa_param param = {RSASSA_PKCS1_V1_5, HASH_UNKNOWN, HASH_MD5, 0};
-	security_error res = crypto_rsa_encryption(g_hnd, &param, UTC_CRYPTO_KEY_NAME, &plain, NULL);
+	security_error res = crypto_rsa_encryption(g_hnd, &param, UTC_CERT_NAME, &plain, NULL);
 
 	TC_ASSERT_EQ("crypto_rsa_encryption_output", res, SECURITY_INVALID_INPUT_PARAMS);
 	TC_SUCCESS_RESULT();
@@ -607,24 +604,20 @@ static void utc_crypto_rsa_encryption_output_n(void)
  */
 static void utc_crypto_rsa_decryption_p(void)
 {
-	unsigned char enc_text[] = "RSA encrypted message";
-	unsigned int enc_text_len = strlen((const char*)enc_text) + 1;
+	unsigned char enc_text[RSA_DATA_LEN] = {1, };
+	unsigned int enc_text_len = RSA_DATA_LEN;
 
 	security_data enc = {enc_text, enc_text_len};
 	security_data dec = {NULL, 0};
 
-	int i = 0, j = 0, k = 0;
-	for (; i < sizeof(g_rsa_mode_table)/sizeof(security_rsa_mode); i++) {
-		for (; j < sizeof(g_hash_mode_table)/sizeof(security_hash_mode); j++) {
-			for (; k < sizeof(g_hash_mode_table)/sizeof(security_hash_mode); k++) {
-				security_rsa_param param = {g_rsa_mode_table[i], g_hash_mode_table[j],
-										   g_hash_mode_table[k], 0};
-				security_error res = crypto_rsa_decryption(g_hnd, &param, UTC_CRYPTO_KEY_NAME,
-														   &enc, &dec);
+	for (int rsa_mode; rsa_mode < sizeof(g_rsa_mode_table) / sizeof(security_rsa_mode); rsa_mode++) {
+		for (int hash_mode; hash_mode < sizeof(g_hash_mode_table) / sizeof(security_hash_mode); hash_mode++) {
+			security_rsa_param param = {g_rsa_mode_table[rsa_mode], g_hash_mode_table[hash_mode], g_hash_mode_table[hash_mode], 0};
+			security_error res = crypto_rsa_decryption(g_hnd, &param, UTC_CERT_NAME,
+													   &enc, &dec);
 
-				TC_ASSERT_EQ("crypto_rsa_decryption_p", res, SECURITY_OK);
-				TC_SUCCESS_RESULT();
-			}
+			TC_ASSERT_EQ("crypto_rsa_decryption_p", res, SECURITY_OK);
+			TC_SUCCESS_RESULT();
 		}
 	}
 }
@@ -646,7 +639,7 @@ static void utc_crypto_rsa_decryption_hnd_n(void)
 	security_data dec = {NULL, 0};
 	security_rsa_param param = {RSASSA_PKCS1_V1_5, HASH_MD5, HASH_MD5, 0};
 
-	security_error res = crypto_rsa_decryption(NULL, &param, UTC_CRYPTO_KEY_NAME, &enc, &dec);
+	security_error res = crypto_rsa_decryption(NULL, &param, UTC_CERT_NAME, &enc, &dec);
 
 	TC_ASSERT_EQ("crypto_rsa_decryption_hnd_n", res, SECURITY_INVALID_INPUT_PARAMS);
 	TC_SUCCESS_RESULT();
@@ -668,7 +661,7 @@ static void utc_crypto_rsa_decryption_param_n(void)
 	security_data enc = {enc_text, enc_text_len};
 	security_data dec = {NULL, 0};
 	security_rsa_param param = {RSASSA_UNKNOWN, HASH_MD5, HASH_MD5, 0};
-	security_error res = crypto_rsa_decryption(g_hnd, &param, UTC_CRYPTO_KEY_NAME, &enc, &dec);
+	security_error res = crypto_rsa_decryption(g_hnd, &param, UTC_CERT_NAME, &enc, &dec);
 
 	TC_ASSERT_EQ("crypto_rsa_decryption_param", res, SECURITY_INVALID_INPUT_PARAMS);
 	TC_SUCCESS_RESULT();
@@ -690,7 +683,7 @@ static void utc_crypto_rsa_decryption_param2_n(void)
 	security_data enc = {enc_text, enc_text_len};
 	security_data dec = {NULL, 0};
 	security_rsa_param param = {RSASSA_PKCS1_V1_5, HASH_UNKNOWN, HASH_MD5, 0};
-	security_error res = crypto_rsa_decryption(g_hnd, &param, UTC_CRYPTO_KEY_NAME, &enc, &dec);
+	security_error res = crypto_rsa_decryption(g_hnd, &param, UTC_CERT_NAME, &enc, &dec);
 
 	TC_ASSERT_EQ("crypto_rsa_decryption_param2", res, SECURITY_INVALID_INPUT_PARAMS);
 	TC_SUCCESS_RESULT();
@@ -712,7 +705,7 @@ static void utc_crypto_rsa_decryption_param3_n(void)
 	security_data enc = {enc_text, enc_text_len};
 	security_data dec = {NULL, 0};
 	security_rsa_param param = {RSASSA_PKCS1_V1_5, HASH_MD5, HASH_UNKNOWN, 0};
-	security_error res = crypto_rsa_decryption(g_hnd, &param, UTC_CRYPTO_KEY_NAME, &enc, &dec);
+	security_error res = crypto_rsa_decryption(g_hnd, &param, UTC_CERT_NAME, &enc, &dec);
 
 	TC_ASSERT_EQ("crypto_rsa_decryption_param3", res, SECURITY_INVALID_INPUT_PARAMS);
 	TC_SUCCESS_RESULT();
@@ -730,7 +723,7 @@ static void utc_crypto_rsa_decryption_input_n(void)
 {
 	security_data dec = {NULL, 0};
 	security_rsa_param param = {RSASSA_PKCS1_V1_5, HASH_MD5, HASH_MD5, 0};
-	security_error res = crypto_rsa_decryption(g_hnd, &param, UTC_CRYPTO_KEY_NAME, NULL, &dec);
+	security_error res = crypto_rsa_decryption(g_hnd, &param, UTC_CERT_NAME, NULL, &dec);
 
 	TC_ASSERT_EQ("crypto_rsa_decryption_input", res, SECURITY_INVALID_INPUT_PARAMS);
 	TC_SUCCESS_RESULT();
@@ -751,7 +744,7 @@ static void utc_crypto_rsa_decryption_output_n(void)
 
 	security_data enc = {enc_text, enc_text_len};
 	security_rsa_param param = {RSASSA_PKCS1_V1_5, HASH_UNKNOWN, HASH_MD5, 0};
-	security_error res = crypto_rsa_decryption(g_hnd, &param, UTC_CRYPTO_KEY_NAME, &enc, NULL);
+	security_error res = crypto_rsa_decryption(g_hnd, &param, UTC_CERT_NAME, &enc, NULL);
 
 	TC_ASSERT_EQ("crypto_rsa_decryption_output", res, SECURITY_INVALID_INPUT_PARAMS);
 	TC_SUCCESS_RESULT();

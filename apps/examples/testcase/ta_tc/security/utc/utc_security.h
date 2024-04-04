@@ -3,8 +3,10 @@
 
 #include <security/security_api.h>
 
+#define UTC_AUTH_KEY_NAME "ss/00"
 #define UTC_CRYPTO_KEY_NAME "ss/01"
 #define UTC_CERT_NAME "ss/02"
+#define UTC_RAM_KEY_NAME "ss/32"
 
 /*  Debugging */
 #define US_ERROR														\

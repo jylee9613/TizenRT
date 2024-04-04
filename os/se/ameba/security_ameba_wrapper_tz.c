@@ -80,7 +80,7 @@ int se_ameba_hal_init(hal_init_param *params)
 	}
 	input_data.factory_slot_key_type[0] = HAL_KEY_ECC_SEC_P256R1;
 	input_data.factory_slot_key_type[1] = HAL_KEY_AES_128;
-	input_data.factory_slot_key_type[2] = HAL_KEY_AES_128;
+	input_data.factory_slot_key_type[2] = HAL_KEY_RSA_1024;
 
 	/* Factory Key and Cert address (Flash) */
 	input_data.factory_cert_addr = FACTORY_CERT_ADDR;
@@ -582,6 +582,7 @@ int se_ameba_hal_aes_encrypt(hal_data *dec_data, hal_aes_param *aes_param, uint3
 
 	if (ret != HAL_SUCCESS) {
 		sedbg("RTL SE failed (%zu)\n", ret);
+		sedbg("RTL SE failed (%d)\n", ret);
 	}
 	return ret;
 }
