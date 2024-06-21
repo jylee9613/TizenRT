@@ -658,6 +658,18 @@ int se_ameba_hal_rsa_decrypt(hal_data *enc_data, hal_rsa_mode *rsa_mode, uint32_
 	return ret;
 }
 
+int se_ameba_hal_gcm_encrypt(hal_data *dec_data, hal_gcm_param *gcm_param, uint32_t key_idx, hal_data *gcm_data)
+{
+	int ret = HAL_SUCCESS;
+	return ret;
+}
+
+int se_ameba_hal_gcm_decrypt(hal_data *enc_data, hal_gcm_param *gcm_param, uint32_t key_idx, hal_data *dec_data)
+{
+	int ret = HAL_SUCCESS;
+	return ret;
+}
+
 int se_ameba_hal_write_storage(uint32_t ss_idx, hal_data *data)
 {
 	AWRAP_ENTER;

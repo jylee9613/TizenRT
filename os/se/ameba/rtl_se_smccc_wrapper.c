@@ -295,6 +295,18 @@ int ameba_hal_rsa_decrypt(inout_struc *in_output, hal_rsa_mode *rsa_mode, uint32
 	return ret;
 }
 
+int ameba_hal_gcm_encrypt(inout_struc *in_output, hal_gcm_param *gcm_param, uint32_t key_idx)
+{
+	int ret = 0;
+	return ret;
+}
+
+int ameba_hal_gcm_decrypt(inout_struc *in_output, hal_gcm_param *gcm_param, uint32_t key_idx)
+{
+	int ret = 0;
+	return ret;
+}
+
 /**
  * Secure Storage
  */
