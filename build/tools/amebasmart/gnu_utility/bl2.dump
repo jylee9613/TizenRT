@@ -38,6 +38,7 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  12 .debug_line   00005e1c  00000000  00000000  00023560  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
+<<<<<<< HEAD
  13 .debug_str    00002711  00000000  00000000  0002937c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  14 .comment      0000002d  00000000  00000000  0002ba8d  2**0
@@ -45,6 +46,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
  15 .ARM.attributes 00000035  00000000  00000000  0002baba  2**0
                   CONTENTS, READONLY
  16 .debug_frame  00001560  00000000  00000000  0002baf0  2**2
+=======
+ 13 .debug_str    0000270d  00000000  00000000  0002937c  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 14 .comment      0000002d  00000000  00000000  0002ba89  2**0
+                  CONTENTS, READONLY
+ 15 .ARM.attributes 00000035  00000000  00000000  0002bab6  2**0
+                  CONTENTS, READONLY
+ 16 .debug_frame  00001560  00000000  00000000  0002baec  2**2
+>>>>>>> 069e316da (os/se/ameba: SE Support GCM mode)
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 SYMBOL TABLE:
 70057000 l    d  .text	00000000 .text
