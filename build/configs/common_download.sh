@@ -356,7 +356,7 @@ erase()
 				echo "=========================="
 			fi
 
-			board_erase $TTYDEV ${offsets[$partidx]} ${sizes[partidx]} ${parts[$partidx]}
+			board_erase $TTYDEV ${offsets[$partidx]} ${sizes[partidx]} ${parts[$partidx]} ALL
 		done
 	else
 		found_kernel=false
