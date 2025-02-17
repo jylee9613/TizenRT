@@ -201,14 +201,15 @@ security_error crypto_gcm_encryption(security_handle hnd,
 	if (!param->tag) {
 		SECAPI_RETURN(SECURITY_ALLOC_ERROR);
 	}
+	memcpy(param->tag, hparam.tag, hparam.tag_len);
+	param->tag_len = hparam.tag_len;
 	
 	output->data = (unsigned char *)malloc(enc.data_len);
 	if (!output->data) {
+		security_free_gcm_param(&hparam);
 		SECAPI_RETURN(SECURITY_ALLOC_ERROR);
 	}
 	
-	memcpy(param->tag, hparam.tag, hparam.tag_len);
-	param->tag_len = hparam.tag_len;
 	SECAPI_DATA_DCOPY(enc, output);
 	SECAPI_RETURN(SECURITY_OK);
 }
