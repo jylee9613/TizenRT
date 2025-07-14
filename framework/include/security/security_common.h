@@ -222,6 +222,10 @@ security_error security_init(security_handle *hnd);
 security_error security_deinit(security_handle hnd);
 security_error security_free_data(security_data *data);
 security_error security_get_status(int *status);
+security_error security_free_aes_param(security_aes_param *param);
+security_error security_free_gcm_param(security_gcm_param *param);
+security_error security_free_dh_param(security_dh_param *param);
+security_error security_free_ecdh_param(security_ecdh_param *param);
 
 #ifdef __cplusplus
 }

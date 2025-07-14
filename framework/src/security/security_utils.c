@@ -394,3 +394,87 @@ int secutils_convert_ecdhparam_s2h(security_ecdh_param *eparam, hal_ecdh_data *h
 
 	return 0;
 }
+
+int secutils_free_hdata(hal_data *hdata)
+{
+	if (hdata->data) {
+		free(hdata->data);
+	}
+	hdata->data = NULL;
+	hdata->data_len = 0;
+	
+	if (hdata->priv) {
+		free(hdata->priv);
+	}
+	hdata->priv = NULL;
+	hdata->data_len = 0;
+}
+
+int secutils_free_aeshparam(hal_aes_param *hparam)
+{
+	if (hparam->iv) {
+		free(hparam->iv);
+	}
+	hparam->iv = NULL;
+	hparam->iv_len = 0;
+
+	return 0;
+}
+
+int secutils_free_gcmhparam(hal_gcm_param *hparam)
+{
+	if (hparam->iv) {
+		free(hparam->iv);
+	}
+	hparam->iv = NULL;
+	hparam->iv_len = 0;
+
+	if (hparam->tag) {
+		free(hparam->tag);
+	}
+	hparam->tag = NULL;
+	hparam->tag_len = 0;
+
+	if (hparam->aad) {
+		free(hparam->aad);
+	}
+	hparam->aad = NULL;
+	hparam->aad_len = 0;
+
+	return 0;
+}
+
+int secutils_free_dhhdata(hal_dh_data *hdata)
+{
+	if (hdata->G) {
+		free(hdata->G);
+	}
+	hdata->G = NULL;
+
+	if (hdata->P) {
+		free(hdata->P);
+	}
+	hdata->P = NULL;
+
+	if (hdata->pubkey) {
+		free(hdata->pubkey);
+	}
+	hdata->pubkey = NULL;
+
+	return 0;
+}
+
+int secutils_free_ecdhhdata(hal_ecdh_data *hdata)
+{
+	if (hdata->pubkey_x) {
+		free(hdata->pubkey_x);
+	}
+	hdata->pubkey_x = NULL;
+
+	if (hdata->pubkey_y) {
+		free(hdata->pubkey_y);
+	}
+	hdata->pubkey_y = NULL;
+
+	return 0;
+}

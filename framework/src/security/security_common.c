@@ -84,7 +84,7 @@ security_error security_free_data(security_data *data)
 		if (data->data) {
 			free(data->data);
 		}
-		data->data = 0;
+		data->data = NULL;
 		data->length = 0;
 	} else {
 		return SECURITY_INVALID_INPUT_PARAMS;
@@ -101,6 +101,75 @@ security_error security_get_status(int *status)
 	}
 	//todo
 	*status = 0;
+
+	SECAPI_RETURN(SECURITY_OK);
+}
+
+security_error security_free_aes_param(security_aes_param *param)
+{
+	if (param->iv) {
+		free(param->iv);
+	}
+	param->iv = NULL;
+	param->iv_len = 0;
+
+	SECAPI_RETURN(SECURITY_OK);
+}
+
+security_error security_free_gcm_param(security_gcm_param *param)
+{
+	if (param->iv) {
+		free(param->iv);
+	}
+	param->iv = NULL;
+	param->iv_len = 0;
+
+	if (param->aad) {
+		free(param->aad);
+	}
+	param->aad = NULL;
+	param->aad_len = 0;
+
+	if (param->tag) {
+		free(param->tag);
+	}
+	param->tag = NULL;
+	param->tag_len = 0;
+
+	SECAPI_RETURN(SECURITY_OK);
+}
+
+security_error security_free_dh_param(security_dh_param *param)
+{
+	if (param->G) {
+		free(param->G);
+	}
+	param->G = NULL;
+
+	if (param->P) {
+		free(param->P);
+	}
+	param->P = NULL;
+
+	if (param->pubkey) {
+		free(param->pubkey);
+	}
+	param->pubkey = NULL;
+
+	SECAPI_RETURN(SECURITY_OK);
+}
+
+security_error security_free_ecdh_param(security_ecdh_param *param)
+{
+	if (param->pubkey_x) {
+		free(param->pubkey_x);
+	}
+	param->pubkey_x = NULL;
+
+	if (param->pubkey_y) {
+		free(param->pubkey_y);
+	}
+	param->pubkey_y = NULL;
 
 	SECAPI_RETURN(SECURITY_OK);
 }

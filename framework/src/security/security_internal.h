@@ -43,12 +43,12 @@
 
 #define SECAPI_DUMMY
 
-#define SECAPI_CALL3(func, res, rsc_clean)                 \
+#define SECAPI_CALL3(func, res, ...)                 \
 	do {                                                   \
 		int secapi_res = func;                             \
 		if (secapi_res != SECLINK_OK) {                    \
 			SECAPI_ERR;                                    \
-			rsc_clean;                                     \
+			__VA_ARGS__;                                     \
 			return secutils_convert_error_h2s(secapi_res); \
 		}                                                  \
 	} while (0)
@@ -239,3 +239,7 @@ int secutils_convert_ecdsaparam_s2h(security_ecdsa_param *eparam, hal_ecdsa_mode
 int secutils_convert_dhparam_s2h(security_dh_param *dparam, hal_dh_data *hdata);
 int secutils_convert_ecdhparam_s2h(security_ecdh_param *eparam, hal_ecdh_data *hdata);
 int secutils_convert_dhparam_h2s(hal_dh_data *hdata, security_dh_param *dparam);
+int secutils_free_aeshparam(hal_aes_param *hparam);
+int secutils_free_gcmhparam(hal_gcm_param *hparam);
+int secutils_free_dhhdata(hal_dh_data *hdata);
+int secutils_free_ecdhhdata(hal_ecdh_data *hdata);
