@@ -307,10 +307,25 @@ int virtual_hal_get_certificate(_IN_ uint32_t cert_idx, _OUT_ hal_data *cert_out
 {
 	VH_ENTER;
 
+	// Validate input parameters
+	if (!cert_out) {
+		return -1;
+	}
+
 	char *cert_data = {"cert_ccccccccccccceeeeeeeeeeeerrrrrrrrrrrttttttttttt"};
 	hal_data cert_s;
 	cert_s.data = (void *)cert_data;
 	cert_s.data_len = sizeof(cert_data);
+
+	// Validate output buffer
+	if (!cert_out->data) {
+		return -1;
+	}
+
+	// Check if the output buffer is large enough
+	if (cert_out->data_len < cert_s.data_len) {
+		return -1;
+	}
 
 	//cert_out->data = (unsigned char *)kmm_malloc(cert_s.data_len);
 	memcpy(cert_out->data, cert_s.data, cert_s.data_len);
@@ -439,7 +454,20 @@ int virtual_hal_rsa_encrypt(_IN_ hal_data *dec_data, _IN_ hal_rsa_mode *mode, _I
 {
 	VH_ENTER;
 
+	// Validate input parameters
+	if (!dec_data || !enc_data) {
+		return -1;
+	}
+
+	// Validate data length (limit to reasonable maximum)
+	if (dec_data->data_len == 0 || dec_data->data_len > 4096) {
+		return -1;
+	}
+
 	enc_data->data = (unsigned char *)kmm_malloc(dec_data->data_len);
+	if (!enc_data->data) {
+		return -1;
+	}
 	memcpy(enc_data->data, dec_data->data, dec_data->data_len);
 	enc_data->data_len = dec_data->data_len;
 
@@ -450,7 +478,20 @@ int virtual_hal_rsa_decrypt(_IN_ hal_data *enc_data, _IN_ hal_rsa_mode *mode, _I
 {
 	VH_ENTER;
 
+	// Validate input parameters
+	if (!enc_data || !dec_data) {
+		return -1;
+	}
+
+	// Validate data length (limit to reasonable maximum)
+	if (enc_data->data_len == 0 || enc_data->data_len > 4096) {
+		return -1;
+	}
+
 	dec_data->data = (unsigned char *)kmm_malloc(enc_data->data_len);
+	if (!dec_data->data) {
+		return -1;
+	}
 	memcpy(dec_data->data, enc_data->data, enc_data->data_len);
 	dec_data->data_len = enc_data->data_len;
 
